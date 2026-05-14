@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1600, height=900" />
+    <title>Homepage Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" crossorigin href="./assets/index-B4K5H6Si.css" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      html,
+      body {
+        width: 1600px;
+        height: 900px;
+        overflow: hidden;
+        background: #0c1018;
+      }
+
+      #root {
+        position: relative;
+        width: 1600px;
+        height: 900px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 22% 22%, rgba(255, 136, 68, 0.16), transparent 24%),
+          radial-gradient(circle at 84% 78%, rgba(255, 176, 103, 0.12), transparent 22%),
+          #0c1018;
+      }
+
+      #page-scene {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        transform-origin: center center;
+      }
+
+      .preview-shell {
+        position: absolute;
+        inset: 26px;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid rgba(232, 238, 247, 0.12);
+        box-shadow:
+          0 42px 120px rgba(0, 0, 0, 0.46),
+          0 0 0 1px rgba(255, 136, 68, 0.08);
+        pointer-events: none;
+        z-index: 210;
+      }
+
+      .preview-shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow:
+          inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+          inset 0 0 120px rgba(0, 0, 0, 0.12);
+      }
+
+      .page-vignette,
+      .page-noise,
+      .scan-beam {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 205;
+      }
+
+      .page-vignette {
+        background:
+          radial-gradient(circle at center, rgba(12, 16, 24, 0) 52%, rgba(12, 16, 24, 0.22) 100%),
+          linear-gradient(180deg, rgba(12, 16, 24, 0) 0%, rgba(12, 16, 24, 0.18) 100%);
+      }
+
+      .page-noise {
+        opacity: 0.08;
+        mix-blend-mode: screen;
+        background-image:
+          radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.7) 0 0.8px, transparent 1px),
+          radial-gradient(circle at 80% 34%, rgba(255, 255, 255, 0.45) 0 0.7px, transparent 0.9px),
+          radial-gradient(circle at 28% 76%, rgba(255, 255, 255, 0.4) 0 0.7px, transparent 0.9px);
+        background-size: 14px 14px, 19px 19px, 23px 23px;
+      }
+
+      .scan-beam {
+        top: -12%;
+        left: -24%;
+        width: 32%;
+        height: 124%;
+        inset: auto;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.02) 42%,
+          rgba(255, 176, 103, 0.18) 50%,
+          rgba(255, 255, 255, 0.02) 58%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transform: skewX(-18deg);
+        mix-blend-mode: screen;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="5.2"
+      data-width="1600"
+      data-height="900"
+    >
+      <div id="page-scene">
+        <nav id="tab-nav">
+          <span class="nav-brand">逆袭的毛毛</span>
+        </nav>
+
+        <div id="avatar-wrap">
+          <img id="avatar" src="./assets/avatar.jpg" alt="逆袭的毛毛" />
+        </div>
+
+        <div id="app">
+          <canvas id="c"></canvas>
+        </div>
+
+        <div id="hint">按住鼠标喷火 · 拖拽龙穿过文字 · 按 P 打开控制面板</div>
+
+        <button id="panel-toggle" title="Settings (P)">⚙</button>
+
+        <div id="stats"></div>
+
+        <div id="panel">
+          <div class="panel-header">
+            <h2>控制面板</h2>
+            <button id="panel-close" title="Close">×</button>
+          </div>
+
+          <div class="section">
+            <div class="section-title">预设</div>
+            <div class="presets" id="presets"></div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">龙</div>
+            <div class="control-row">
+              <span class="control-label">节数</span>
+              <input type="range" data-key="dragonSegments" min="10" max="80" step="1" />
+              <span class="control-value" data-val="dragonSegments"></span>
+            </div>
+            <div class="control-row">
+              <span class="control-label">速度</span>
+              <input type="range" data-key="dragonSpeed" min="0.02" max="0.4" step="0.01" />
+              <span class="control-value" data-val="dragonSpeed"></span>
+            </div>
+            <div class="control-row">
+              <span class="control-label">大小</span>
+              <input type="range" data-key="dragonScale" min="0.3" max="3" step="0.1" />
+              <span class="control-value" data-val="dragonScale"></span>
+            </div>
+            <div class="toggle-row">
+              <span class="control-label">翅膀</span>
+              <label class="toggle"><input type="checkbox" data-key="showWings" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span class="control-label">脊刺</span>
+              <label class="toggle"><input type="checkbox" data-key="showSpines" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">物理</div>
+            <div class="control-row">
+              <span class="control-label">推力</span>
+              <input type="range" data-key="pushForce" min="1" max="30" step="0.5" />
+              <span class="control-value" data-val="pushForce"></span>
+            </div>
+            <div class="control-row">
+              <span class="control-label">弹簧</span>
+              <input type="range" data-key="springStrength" min="0.002" max="0.08" step="0.001" />
+              <span class="control-value" data-val="springStrength"></span>
+            </div>
+            <div class="control-row">
+              <span class="control-label">阻尼</span>
+              <input type="range" data-key="damping" min="0.8" max="0.99" step="0.005" />
+              <span class="control-value" data-val="damping"></span>
+            </div>
+            <div class="control-row">
+              <span class="control-label">重力</span>
+              <input type="range" data-key="burnGravity" min="0" max="3" step="0.1" />
+              <span class="control-value" data-val="burnGravity"></span>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">火焰</div>
+            <div class="control-row">
+              <span class="control-label">爆炸半径</span>
+              <input type="range" data-key="fireRadius" min="30" max="250" step="5" />
+              <span class="control-value" data-val="fireRadius"></span>
+            </div>
+            <div class="control-row">
+              <span class="control-label">爆炸力度</span>
+              <input type="range" data-key="fireForce" min="5" max="50" step="1" />
+              <span class="control-value" data-val="fireForce"></span>
+            </div>
+            <div class="toggle-row">
+              <span class="control-label">屏幕震动</span>
+              <label class="toggle"><input type="checkbox" data-key="screenShake" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span class="control-label">余烬</span>
+              <label class="toggle"><input type="checkbox" data-key="showEmbers" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span class="control-label">粒子</span>
+              <label class="toggle"><input type="checkbox" data-key="showParticles" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">氛围</div>
+            <div class="toggle-row">
+              <span class="control-label">符文</span>
+              <label class="toggle"><input type="checkbox" data-key="showRunes" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            </div>
+            <div class="toggle-row">
+              <span class="control-label">自定义光标</span>
+              <label class="toggle"><input type="checkbox" data-key="showCursor" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+            </div>
+            <div class="control-row">
+              <span class="control-label">文字透明度</span>
+              <input type="range" data-key="textOpacity" min="0" max="1.5" step="0.05" />
+              <span class="control-value" data-val="textOpacity"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-vignette"></div>
+      <div class="page-noise"></div>
+      <div class="scan-beam"></div>
+      <div class="preview-shell"></div>
+    </div>
+
+    <script type="module" crossorigin src="./assets/index-CiCQ1OF2.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      const interactionTarget = document.getElementById("app") ?? document.body;
+
+      const movePointer = (x, y) => {
+        interactionTarget.dispatchEvent(new MouseEvent("mousemove", { clientX: x, clientY: y, bubbles: true }));
+      };
+
+      const pointerDown = (x, y) => {
+        interactionTarget.dispatchEvent(new MouseEvent("mousedown", { clientX: x, clientY: y, bubbles: true }));
+      };
+
+      const pointerUp = (x, y) => {
+        interactionTarget.dispatchEvent(new MouseEvent("mouseup", { clientX: x, clientY: y, bubbles: true }));
+      };
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from("#page-scene", {
+        scale: 1.045,
+        opacity: 0,
+        duration: 0.9,
+        ease: "expo.out",
+      }, 0);
+
+      tl.from(".preview-shell", {
+        scale: 0.985,
+        opacity: 0,
+        duration: 0.82,
+        ease: "power2.out",
+      }, 0.08);
+
+      tl.call(() => movePointer(890, 410), [], 0.28);
+      tl.call(() => movePointer(1010, 470), [], 0.86);
+      tl.call(() => movePointer(1140, 560), [], 1.38);
+      tl.call(() => movePointer(970, 360), [], 1.94);
+      tl.call(() => pointerDown(970, 360), [], 2.06);
+      tl.call(() => movePointer(1130, 350), [], 2.34);
+      tl.call(() => movePointer(1270, 322), [], 2.76);
+      tl.call(() => pointerUp(1270, 322), [], 3.14);
+      tl.call(() => movePointer(860, 420), [], 3.58);
+
+      tl.to("#page-scene", {
+        scale: 1.018,
+        x: -18,
+        y: -10,
+        duration: 2.2,
+        ease: "sine.inOut",
+        repeat: 1,
+        yoyo: true,
+      }, 1.18);
+
+      tl.fromTo(".scan-beam", {
+        xPercent: -108,
+        opacity: 0,
+      }, {
+        xPercent: 218,
+        opacity: 1,
+        duration: 1.46,
+        ease: "power1.inOut",
+      }, 1.48);
+
+      tl.to(".scan-beam", {
+        opacity: 0,
+        duration: 0.38,
+        ease: "power1.out",
+      }, 2.96);
+
+      window.__timelines.main = tl;
+    </script>
+  </body>
+</html>

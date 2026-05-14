@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>个人主页</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+<!-- Tab nav -->
+<nav id="tab-nav">
+  <span class="nav-brand">逆袭的毛毛</span>
+</nav>
+
+<!-- Avatar -->
+<div id="avatar-wrap">
+  <img id="avatar" src="./avatar.jpg" alt="逆袭的毛毛" />
+</div>
+
+<!-- Canvas mount -->
+<div id="app">
+  <canvas id="c"></canvas>
+</div>
+
+<!-- Hint -->
+<div id="hint">按住鼠标喷火 · 拖拽龙穿过文字 · 按 P 打开控制面板</div>
+
+<!-- Panel toggle -->
+<button id="panel-toggle" title="Settings (P)">⚙</button>
+
+<!-- Stats -->
+<div id="stats"></div>
+
+<!-- Control Panel -->
+<div id="panel">
+  <div class="panel-header">
+    <h2>控制面板</h2>
+    <button id="panel-close" title="Close">×</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">预设</div>
+    <div class="presets" id="presets"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">龙</div>
+    <div class="control-row">
+      <span class="control-label">节数</span>
+      <input type="range" data-key="dragonSegments" min="10" max="80" step="1" />
+      <span class="control-value" data-val="dragonSegments"></span>
+    </div>
+    <div class="control-row">
+      <span class="control-label">速度</span>
+      <input type="range" data-key="dragonSpeed" min="0.02" max="0.4" step="0.01" />
+      <span class="control-value" data-val="dragonSpeed"></span>
+    </div>
+    <div class="control-row">
+      <span class="control-label">大小</span>
+      <input type="range" data-key="dragonScale" min="0.3" max="3" step="0.1" />
+      <span class="control-value" data-val="dragonScale"></span>
+    </div>
+    <div class="toggle-row">
+      <span class="control-label">翅膀</span>
+      <label class="toggle"><input type="checkbox" data-key="showWings" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+    </div>
+    <div class="toggle-row">
+      <span class="control-label">脊刺</span>
+      <label class="toggle"><input type="checkbox" data-key="showSpines" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">物理</div>
+    <div class="control-row">
+      <span class="control-label">推力</span>
+      <input type="range" data-key="pushForce" min="1" max="30" step="0.5" />
+      <span class="control-value" data-val="pushForce"></span>
+    </div>
+    <div class="control-row">
+      <span class="control-label">弹簧</span>
+      <input type="range" data-key="springStrength" min="0.002" max="0.08" step="0.001" />
+      <span class="control-value" data-val="springStrength"></span>
+    </div>
+    <div class="control-row">
+      <span class="control-label">阻尼</span>
+      <input type="range" data-key="damping" min="0.8" max="0.99" step="0.005" />
+      <span class="control-value" data-val="damping"></span>
+    </div>
+    <div class="control-row">
+      <span class="control-label">重力</span>
+      <input type="range" data-key="burnGravity" min="0" max="3" step="0.1" />
+      <span class="control-value" data-val="burnGravity"></span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">火焰</div>
+    <div class="control-row">
+      <span class="control-label">爆炸半径</span>
+      <input type="range" data-key="fireRadius" min="30" max="250" step="5" />
+      <span class="control-value" data-val="fireRadius"></span>
+    </div>
+    <div class="control-row">
+      <span class="control-label">爆炸力度</span>
+      <input type="range" data-key="fireForce" min="5" max="50" step="1" />
+      <span class="control-value" data-val="fireForce"></span>
+    </div>
+    <div class="toggle-row">
+      <span class="control-label">屏幕震动</span>
+      <label class="toggle"><input type="checkbox" data-key="screenShake" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+    </div>
+    <div class="toggle-row">
+      <span class="control-label">余烬</span>
+      <label class="toggle"><input type="checkbox" data-key="showEmbers" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+    </div>
+    <div class="toggle-row">
+      <span class="control-label">粒子</span>
+      <label class="toggle"><input type="checkbox" data-key="showParticles" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">氛围</div>
+    <div class="toggle-row">
+      <span class="control-label">符文</span>
+      <label class="toggle"><input type="checkbox" data-key="showRunes" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+    </div>
+    <div class="toggle-row">
+      <span class="control-label">自定义光标</span>
+      <label class="toggle"><input type="checkbox" data-key="showCursor" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+    </div>
+    <div class="control-row">
+      <span class="control-label">文字透明度</span>
+      <input type="range" data-key="textOpacity" min="0" max="1.5" step="0.05" />
+      <span class="control-value" data-val="textOpacity"></span>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/src/dragon.ts"></script>
+
+</body>
+</html>

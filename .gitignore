@@ -1,0 +1,9 @@
+homepage/node_modules/
+homepage/dist/
+homepage/dist-deploy.zip
+preview-video/node_modules/
+preview-video/renders/
+
+*.log
+.env
+.env.*

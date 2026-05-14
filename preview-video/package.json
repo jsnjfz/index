@@ -1,0 +1,15 @@
+{
+  "name": "homepage-preview-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "bun x hyperframes lint",
+    "validate": "bun x hyperframes validate",
+    "render": "bun run scripts/render-readme-preview.mjs"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "hyperframes": "^0.6.6"
+  }
+}
